@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{360A9116-E7D2-43B6-885D-70C4837BBF04}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GloryS.Common</RootNamespace>
+    <AssemblyName>GloryS.Common</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MoreLinq, Version=1.1.17511.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\morelinq.1.1.0\lib\net35\MoreLinq.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Extensions\DelegateEqualityComparer.cs" />
+    <Compile Include="Extensions\Linq\Expressions\ExpressionRebinder.cs" />
+    <Compile Include="Model\AlertType.cs" />
+    <Compile Include="Cultures\Culture.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Culture.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Extensions\Linq\Expressions\ParameterChangeTypeRebinder.cs" />
+    <Compile Include="Model\CRUDOperation.cs" />
+    <Compile Include="Extensions\CollectionExtensions.cs" />
+    <Compile Include="Extensions\EnumerableComparer.cs" />
+    <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Extensions\FilterExpressionExtensions.cs" />
+    <Compile Include="Extensions\Linq\Expressions\EnumerableInitializer.cs" />
+    <Compile Include="Extensions\Linq\Expressions\BuilderLinqExpressionExtensions.cs" />
+    <Compile Include="Extensions\Linq\Expressions\InitializationMerge.cs" />
+    <Compile Include="Extensions\Linq\Expressions\InitializationRebinder.cs" />
+    <Compile Include="Extensions\Linq\Expressions\IntializationFromMemberMerge.cs" />
+    <Compile Include="Extensions\Linq\Expressions\MemberInitializer.cs" />
+    <Compile Include="Extensions\Linq\Expressions\MemberRebinder.cs" />
+    <Compile Include="Extensions\Linq\Expressions\ParameterRebinder.cs" />
+    <Compile Include="Resolvers\MapperLinqExpressionsExtension.cs" />
+    <Compile Include="Resolvers\SelectsResolver\IParamSelectExpression.cs" />
+    <Compile Include="Resolvers\SelectsResolver\ISelectResolver.cs" />
+    <Compile Include="Resolvers\Mapper.cs" />
+    <Compile Include="Extensions\IFilterExpression.cs" />
+    <Compile Include="Resolvers\MapperResolver\IMappingResolver.cs" />
+    <Compile Include="Resolvers\SelectsResolver\ISelectExpressionNonCache.cs" />
+    <Compile Include="Model\IdName.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resolvers\MapperResolver\IPropertiesMapper.cs" />
+    <Compile Include="Resolvers\MapperResolver\MappingResolver.cs" />
+    <Compile Include="Model\PairId.cs" />
+    <Compile Include="Resolvers\SelectsResolver\ISelectExpression.cs" />
+    <Compile Include="Resolvers\MapperLinqSelectExtension.cs" />
+    <Compile Include="Resolvers\SelectsResolver\SelectResolver.cs" />
+    <Compile Include="Model\TreeNode.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Cultures\Culture.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Culture.cs</LastGenOutput>
+    </None>
+    <None Include="DteExtensions.ttinclude" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

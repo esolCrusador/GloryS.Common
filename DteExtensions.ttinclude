@@ -1,0 +1,104 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ assembly name="EnvDTE" #>
+<#+
+	public EnvDTE.Project GetActiveProject()
+	{
+		EnvDTE.DTE dte = (EnvDTE.DTE)((IServiceProvider)Host).GetService(typeof(EnvDTE.DTE));
+		return dte.Solution.FindProjectItem(Host.TemplateFile).ContainingProject;
+	}
+
+	public static IEnumerable<EnvDTE.ProjectItem> GetAllItems(EnvDTE.Project project)
+	{
+		return project.ProjectItems==null ? Enumerable.Empty<EnvDTE.ProjectItem>() : GetProjectItems(project.ProjectItems.Cast<EnvDTE.ProjectItem>());
+	}
+
+	private static IEnumerable<EnvDTE.ProjectItem> GetProjectItems(IEnumerable<EnvDTE.ProjectItem> projectItems)
+	{
+		var projectsList = projectItems as IList<EnvDTE.ProjectItem> ?? projectItems.ToList();
+
+		return projectsList.Concat(projectsList.SelectMany(pi => GetProjectItems(pi.ProjectItems == null ? Enumerable.Empty<EnvDTE.ProjectItem>() : pi.ProjectItems.Cast<EnvDTE.ProjectItem>())));
+	}
+
+	public static IEnumerable<EnvDTE.Project> GetAllProjects(EnvDTE.Solution solution)
+	{
+		return solution.Projects.Cast<EnvDTE.Project>().SelectMany(proj => GetProjectWithSubProjects(proj));
+
+	}
+
+	private static IEnumerable<EnvDTE.Project> GetProjectWithSubProjects(EnvDTE.Project project)
+	{
+		return Enumerable.Repeat(project, 1).Concat(
+			GetAllItems(project)
+				.Where(item => item.SubProject != null)
+				.SelectMany(item => GetProjectWithSubProjects(item.SubProject))
+			);
+	}
+
+	public static IEnumerable<EnvDTE.CodeElement> GetCodeElements(EnvDTE.Project project, params EnvDTE.vsCMElement[] elementTypes)
+	{
+		 return	 GetAllItems(project)
+				.Where(pi=>pi.FileCodeModel!=null)
+				.SelectMany(pi=>pi.FileCodeModel.CodeElements.Cast<EnvDTE.CodeElement>())
+				.Where(ce=>ce.Kind == EnvDTE.vsCMElement.vsCMElementNamespace).Cast<EnvDTE.CodeNamespace>()
+				.SelectMany(cn=>cn.Members.Cast<EnvDTE.CodeElement>()).Where(ce=>elementTypes.Contains(ce.Kind));
+	}
+
+	public List<EnvDTE.CodeElement> FindCodeElements(Func<EnvDTE.CodeElement, bool> predicate)
+	{
+		EnvDTE.DTE dte = (EnvDTE.DTE)((IServiceProvider)Host).GetService(typeof(EnvDTE.DTE));
+
+		var rootProjectItems = dte.Solution.Projects.Cast<EnvDTE.Project>()
+			.SelectMany(proj=>proj.ProjectItems==null 
+				? Enumerable.Empty<EnvDTE.ProjectItem>() 
+				: proj.ProjectItems.Cast<EnvDTE.ProjectItem>());
+
+		List<EnvDTE.CodeElement> results = new List<EnvDTE.CodeElement>(1);
+
+		FindCodeElements(rootProjectItems, results, predicate);
+
+		return results;
+	}
+
+	private static void FindCodeElements(IEnumerable<EnvDTE.ProjectItem> items, List<EnvDTE.CodeElement> results, Func<EnvDTE.CodeElement, bool> predicate)
+	{
+		IEnumerable<EnvDTE.CodeElement> newResults = items
+				.Where(item=>item.FileCodeModel!=null)
+				.SelectMany(item=>item.FileCodeModel.CodeElements.Cast<EnvDTE.CodeElement>())
+				.Where(ce=>ce.Kind == EnvDTE.vsCMElement.vsCMElementNamespace).Cast<EnvDTE.CodeNamespace>()
+				.SelectMany(cn=>cn.Members.Cast<EnvDTE.CodeElement>()).Where(predicate);
+
+		results.AddRange(newResults);
+
+		foreach(EnvDTE.ProjectItem item in items)
+		{
+			if(item.ProjectItems==null)
+			{
+				continue;
+			}
+
+			IEnumerable<EnvDTE.ProjectItem> subItems = item.ProjectItems.Cast<EnvDTE.ProjectItem>();
+
+			FindCodeElements(subItems, results, predicate);
+		}
+	}
+
+	public static IEnumerable<EnvDTE.CodeElement> GetCodeElements(IEnumerable<EnvDTE.CodeInterface> interfaces)
+	{
+		List<EnvDTE.CodeInterface> parents = interfaces.SelectMany(ci=>ci.Bases.Cast<EnvDTE.CodeElement>()).Distinct()
+			.Where(ce=>ce.Kind==EnvDTE.vsCMElement.vsCMElementInterface).Cast<EnvDTE.CodeInterface>()
+			.ToList();
+
+		IEnumerable<EnvDTE.CodeElement> elements = interfaces.SelectMany(ci=>ci.Members.Cast<EnvDTE.CodeElement>());
+
+		if(parents.Count!=0)
+		{
+			elements = elements.Concat(GetCodeElements(parents));
+		}
+
+		return elements;
+	}
+#>
