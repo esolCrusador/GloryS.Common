@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{360A9116-E7D2-43B6-885D-70C4837BBF04}</ProjectGuid>
+    <ProjectGuid>{88E50888-1060-410C-AB15-202FE569486E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GloryS.Common</RootNamespace>
