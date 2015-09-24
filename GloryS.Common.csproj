@@ -43,27 +43,31 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\DelegateEqualityComparer.cs" />
-    <Compile Include="Extensions\Linq\Expressions\ExpressionRebinder.cs" />
+    <Compile Include="Extensions\Linq\Expressions\AggregateExpressionExtensions.cs" />
+    <Compile Include="Extensions\Linq\Expressions\ContinuationsExpressionExtensions.cs" />
+    <Compile Include="Extensions\Linq\Expressions\EnumExpressionExtensions.cs" />
+    <Compile Include="Extensions\Linq\Expressions\ParameterReplacementExtensions.cs" />
+    <Compile Include="Extensions\Linq\Expressions\Visitors\ExpressionRebinder.cs" />
     <Compile Include="Model\AlertType.cs" />
     <Compile Include="Cultures\Culture.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Culture.tt</DependentUpon>
     </Compile>
-    <Compile Include="Extensions\Linq\Expressions\ParameterChangeTypeRebinder.cs" />
+    <Compile Include="Extensions\Linq\Expressions\Visitors\ParameterChangeTypeRebinder.cs" />
     <Compile Include="Model\CRUDOperation.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\EnumerableComparer.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\FilterExpressionExtensions.cs" />
-    <Compile Include="Extensions\Linq\Expressions\EnumerableInitializer.cs" />
-    <Compile Include="Extensions\Linq\Expressions\BuilderLinqExpressionExtensions.cs" />
-    <Compile Include="Extensions\Linq\Expressions\InitializationMerge.cs" />
-    <Compile Include="Extensions\Linq\Expressions\InitializationRebinder.cs" />
-    <Compile Include="Extensions\Linq\Expressions\IntializationFromMemberMerge.cs" />
-    <Compile Include="Extensions\Linq\Expressions\MemberInitializer.cs" />
-    <Compile Include="Extensions\Linq\Expressions\MemberRebinder.cs" />
-    <Compile Include="Extensions\Linq\Expressions\ParameterRebinder.cs" />
+    <Compile Include="Extensions\Linq\Expressions\Rebinders\EnumerableMemberInitRebinder.cs" />
+    <Compile Include="Extensions\Linq\Expressions\ClassBehaviourExpressionExtensions.cs" />
+    <Compile Include="Extensions\Linq\Expressions\Rebinders\InitInheritanceRebinder.cs" />
+    <Compile Include="Extensions\Linq\Expressions\Rebinders\InitRebinder.cs" />
+    <Compile Include="Extensions\Linq\Expressions\Rebinders\InitFromMemberInheritanceRebinder.cs" />
+    <Compile Include="Extensions\Linq\Expressions\Rebinders\MemberInitRebinder.cs" />
+    <Compile Include="Extensions\Linq\Expressions\Visitors\MemberRebinder.cs" />
+    <Compile Include="Extensions\Linq\Expressions\Visitors\ParameterRebinder.cs" />
     <Compile Include="Resolvers\MapperLinqExpressionsExtension.cs" />
     <Compile Include="Resolvers\SelectsResolver\IParamSelectExpression.cs" />
     <Compile Include="Resolvers\SelectsResolver\ISelectResolver.cs" />

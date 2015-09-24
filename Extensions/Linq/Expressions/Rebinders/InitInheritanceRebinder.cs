@@ -5,12 +5,12 @@ using System.Linq.Expressions;
 
 namespace GloryS.Common.Extensions.Linq.Expressions
 {
-    public class InitializationMerge<TBaseSource, TBaseDist, TSource, TDest> : InitializationRebinder<TSource, TDest>
+    public class InitInheritanceRebinder<TBaseSource, TBaseDist, TSource, TDest> : InitRebinder<TSource, TDest>
         where TDest : TBaseDist
     {
         protected readonly Expression<Func<TBaseSource, TBaseDist>> BaseInitExpr;
 
-        public InitializationMerge(Expression<Func<TBaseSource, TBaseDist>> baseExpr, Expression<Func<TSource, TDest>> initializationExpression)
+        public InitInheritanceRebinder(Expression<Func<TBaseSource, TBaseDist>> baseExpr, Expression<Func<TSource, TDest>> initializationExpression)
             : base(initializationExpression)
         {
             BaseInitExpr = baseExpr;

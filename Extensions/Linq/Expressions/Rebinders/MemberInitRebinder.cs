@@ -6,14 +6,14 @@ using System.Reflection;
 
 namespace GloryS.Common.Extensions.Linq.Expressions
 {
-    public class MemberInitializer<TSource, TResult, TSourceMember, TMember>
-        :InitializationRebinder<TSource, TResult>
+    public class MemberInitRebinder<TSource, TResult, TSourceMember, TMember>
+        :InitRebinder<TSource, TResult>
     {
         private readonly Expression<Func<TSource, TSourceMember>> _sourceMember;
         private readonly Expression<Func<TResult, TMember>> _member;
         private readonly Expression<Func<TSourceMember, TMember>> _initialization;
 
-        public MemberInitializer(Expression<Func<TSource, TResult>> initializationExpression,
+        public MemberInitRebinder(Expression<Func<TSource, TResult>> initializationExpression,
                                  Expression<Func<TSource, TSourceMember>> sourceMember,
                                  Expression<Func<TResult, TMember>> member,
                                  Expression<Func<TSourceMember, TMember>> initialization)
