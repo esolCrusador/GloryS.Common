@@ -12,34 +12,40 @@ namespace GloryS.LinqSample
     {
         private static readonly ConstantExpression EmptyStringExpression = Expression.Constant(String.Empty, typeof(string));
         private static readonly ConstantExpression NullStringExpression = Expression.Constant(null, typeof(string));
+        private static readonly Type StringType = typeof (String);
 
         public static Expression<Func<TEnum, string>> GetEnumToStringExpression<TEnum>(Func<Enum, string> toString)
         {
             bool isNullable = false;
+
             Type enumType = typeof (TEnum);
-            Type nullableEnumType = Nullable.GetUnderlyingType(enumType);
+            Type enumExactType = enumType;
+            Type nullableEnumType = Nullable.GetUnderlyingType(enumExactType);
             if (nullableEnumType != null)
             {
                 isNullable = true;
-                enumType = nullableEnumType;
+                enumExactType = nullableEnumType;
             }
+            Type enumUnderlyingType = Enum.GetUnderlyingType(enumExactType);
 
-            var allMembers = EnumExtensions.GetAllMembers(enumType).Select(e => new KeyValuePair<Enum, string>(e, toString(e))).ToList();
+            var allMembers = EnumExtensions.GetAllMembers(enumExactType).Select(e => new KeyValuePair<Enum, string>(e, toString(e))).OrderBy(e=>e.Value).ToList();
 
-            ParameterExpression parameter = Expression.Parameter(typeof (TEnum), enumType.Name.ToLower());
+            ParameterExpression parameter = Expression.Parameter(enumType, enumExactType.Name.ToLower());
+            Expression zeroConstant = Expression.Convert(Expression.Constant(Activator.CreateInstance(enumUnderlyingType), enumUnderlyingType), enumType);
 
             //Flag enum.
-            if (enumType.GetCustomAttributes(typeof (FlagsAttribute), false).Any())
+            if (enumExactType.GetCustomAttributes(typeof (FlagsAttribute), false).Any())
             {
-                Type enumUnderlyingType = Enum.GetUnderlyingType(enumType);
                 Expression<Func<string, string>> subStringExpression = enumResult => enumResult.Substring(2, int.MaxValue);
 
                 // Ex: gender => ((gender & Gender.Male) == Gender.Male?", Male":"") + ((gender & Gender.Female) == Gender.Female?", Female":"") + ...; Result: ", Male, Female ..."
                 Expression<Func<TEnum, string>> allMembersToString = allMembers.Select(kvp =>
                 {
-                    Expression compareVal = Expression.Convert(Expression.Constant(kvp.Key, enumType), enumUnderlyingType);
-                    ConstantExpression resultString = Expression.Constant(", " + kvp.Value, typeof (String));
+                    // (int) Gender.Male
+                    Expression compareVal = Expression.Convert(Expression.Constant(kvp.Key, enumExactType), enumUnderlyingType);
+                    ConstantExpression resultString = Expression.Constant(", " + kvp.Value, StringType);
 
+                    // (gender & Gender.Male) == Gender.Male
                     Expression equalsExpression = Expression.Equal(Expression.And(Expression.Convert(parameter, enumUnderlyingType), compareVal), compareVal);
                     Expression enumToStringBody = Expression.Condition(equalsExpression, resultString, EmptyStringExpression);
 
@@ -49,17 +55,24 @@ namespace GloryS.LinqSample
 
                 // Ex: gender => (((gender & Gender.Male) == Gender.Male?", Male":"") + ((gender & Gender.Female) == Gender.Female?", Female":"") + ...).Substring(2); Result: "Male, Female ..."
                 Expression<Func<TEnum, string>> notNullExpression = allMembersToString.Continue(subStringExpression);
+
+                //Zero check
+                Expression checkZeroBody = Expression.Condition(Expression.Equal(parameter, zeroConstant), EmptyStringExpression, notNullExpression.Body);
+
+                // Ex: gender => gender==0 ? "" : (((gender & Gender.Male) == Gender.Male?", Male":"") + ((gender & Gender.Female) == Gender.Female?", Female":"") + ...).Substring(2);
+                notNullExpression = Expression.Lambda<Func<TEnum, string>>(checkZeroBody, notNullExpression.Parameters[0]);
+
                 if (isNullable)
                 {
-                    // Ex: gender => gender==null ? null : (((gender & Gender.Male) == Gender.Male?", Male":"") + ((gender & Gender.Female) == Gender.Female?", Female":"") + ...).Substring(2);
-                    ConstantExpression nullEnumVal = Expression.Constant(null, typeof (TEnum));
+                    // Ex: gender => gender==null ? null : (gender==0 ? "" : (((gender & Gender.Male) == Gender.Male?", Male":"") + ((gender & Gender.Female) == Gender.Female?", Female":"") + ...).Substring(2));
+                    ConstantExpression nullEnumVal = Expression.Constant(null, enumType);
                     ConditionalExpression nullStringIfNullValue = Expression.Condition(Expression.Equal(parameter, nullEnumVal), NullStringExpression, notNullExpression.Body);
 
                     return Expression.Lambda<Func<TEnum, string>>(nullStringIfNullValue, parameter);
                 }
                 else
                 {
-                    // Ex: gender => (((gender & Gender.Male) == Gender.Male?", Male":"") + ((gender & Gender.Female) == Gender.Female?", Female":"") + ...).Substring(2);
+                    // Ex: gender => gender==0 ? "" : (((gender & Gender.Male) == Gender.Male?", Male":"") + ((gender & Gender.Female) == Gender.Female?", Female":"") + ...).Substring(2);
                     return notNullExpression;
                 }
             }
@@ -69,16 +82,20 @@ namespace GloryS.LinqSample
 
                 foreach (var kvp in allMembers)
                 {
-                    ConstantExpression compareVal = Expression.Constant(kvp.Key, typeof(TEnum));
-                    ConstantExpression resultString = Expression.Constant(kvp.Value, typeof (String));
+                    ConstantExpression compareVal = Expression.Constant(kvp.Key, enumType);
+                    ConstantExpression resultString = Expression.Constant(kvp.Value, StringType);
 
-                    // gender => (gender == Gender.Male ? "Male" : (gender == Gender.Female ? "Female" : (...)))
+                    // gender => (gender == Gender.Male ? "Male" : (gender == Gender.Female ? "Female" : (...)));
                     resultBody = Expression.Condition(Expression.Equal(parameter, compareVal), resultString, resultBody);
                 }
 
+                //Zero check
+                // gender => gender == 0 ? "" : (gender == Gender.Male ? "Male" : (gender == Gender.Female ? "Female" : (...)));
+                resultBody = Expression.Condition(Expression.Equal(parameter, zeroConstant), EmptyStringExpression, resultBody);
+
                 if (isNullable)
                 {
-                    ConstantExpression nullEnumVal = Expression.Constant(null, typeof(TEnum));
+                    ConstantExpression nullEnumVal = Expression.Constant(null, enumType);
                     ConditionalExpression nullStringIfNullValue = Expression.Condition(Expression.Equal(parameter, nullEnumVal), NullStringExpression, resultBody);
 
                     return Expression.Lambda<Func<TEnum, string>>(nullStringIfNullValue, parameter);
