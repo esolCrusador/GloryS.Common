@@ -3,12 +3,12 @@ using System.Linq.Expressions;
 
 namespace GloryS.Common.Extensions.Linq.Expressions
 {
-    public class IntializationFromMemberMerge<TBaseSource, TBaseDest, TSource, TDest> : InitializationMerge<TBaseSource, TBaseDest, TSource, TDest>
+    public class InitFromMemberInheritanceRebinder<TBaseSource, TBaseDest, TSource, TDest> : InitInheritanceRebinder<TBaseSource, TBaseDest, TSource, TDest>
         where TDest : TBaseDest
     {
         private readonly Expression<Func<TSource, TBaseSource>> _entityMember;
 
-        public IntializationFromMemberMerge(Expression<Func<TBaseSource, TBaseDest>> baseExpr, Expression<Func<TSource, TBaseSource>> entityMember, Expression<Func<TSource, TDest>> initializationExpression)
+        public InitFromMemberInheritanceRebinder(Expression<Func<TBaseSource, TBaseDest>> baseExpr, Expression<Func<TSource, TBaseSource>> entityMember, Expression<Func<TSource, TDest>> initializationExpression)
             : base(baseExpr, initializationExpression)
         {
             _entityMember = entityMember;

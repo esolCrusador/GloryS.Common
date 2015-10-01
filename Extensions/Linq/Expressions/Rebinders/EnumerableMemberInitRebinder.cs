@@ -6,14 +6,14 @@ using System.Reflection;
 
 namespace GloryS.Common.Extensions.Linq.Expressions
 {
-    public class EnumerableInitializer<TSource, TResult, TSourceMember, TMember>
-        : InitializationRebinder<TSource, TResult>
+    public class EnumerableMemberInitRebinder<TSource, TResult, TSourceMember, TMember>
+        : InitRebinder<TSource, TResult>
     {
         private static readonly MethodInfo SelectMethodInfo;
 
         private delegate IEnumerable<TMember> EnumerableSelect(IEnumerable<TSourceMember> enumerable, Func<TSourceMember, TMember> select);
 
-        static EnumerableInitializer ()
+        static EnumerableMemberInitRebinder ()
         {
             EnumerableSelect selectDelegate = Enumerable.Select;
 
@@ -24,7 +24,7 @@ namespace GloryS.Common.Extensions.Linq.Expressions
         private readonly Expression<Func<TResult, IEnumerable<TMember>>> _member;
         private readonly Expression<Func<TSourceMember, TMember>> _initialization;
 
-        public EnumerableInitializer(Expression<Func<TSource, TResult>> initializationExpression,
+        public EnumerableMemberInitRebinder(Expression<Func<TSource, TResult>> initializationExpression,
                                      Expression<Func<TSource, IEnumerable<TSourceMember>>> sourceMember,
                                      Expression<Func<TResult, IEnumerable<TMember>>> member,
                                      Expression<Func<TSourceMember, TMember>> initialization)
@@ -61,7 +61,7 @@ namespace GloryS.Common.Extensions.Linq.Expressions
             }
             bindingsList.Add(memberAssigment);
 
-            return Expression.Lambda<Func<TSource, TResult>>(Expression.MemberInit(memberInitBody.NewExpression, bindingsList), Parameter); ;
+            return Expression.Lambda<Func<TSource, TResult>>(Expression.MemberInit(memberInitBody.NewExpression, bindingsList), Parameter);
         }
     }
 }
