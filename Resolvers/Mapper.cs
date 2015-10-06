@@ -90,6 +90,17 @@ namespace System
             return dest;
         }
 
+        public static TDest Map<TMapper, TSource, TDest>(TSource source, TDest dest)
+            where TMapper : class, new()
+            where TDest : class
+            where TSource : class
+        {
+            var tMapper = (IPropertiesMapper<TSource, TDest>) new TMapper();
+            tMapper.MapProperties(source, dest);
+
+            return dest;
+        }
+
         #endregion
     }
 }
