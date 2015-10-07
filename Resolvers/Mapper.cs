@@ -108,7 +108,7 @@ namespace System
         {
             TDest dest = new TDest();
 
-            return Map(source, dest);
+            return Map<TMapper, TSource, TDest>(source, dest);
         }
 
         #endregion
