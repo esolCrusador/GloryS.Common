@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LinqExpressionsMapper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=321140b77c1b6047, processorArchitecture=MSIL">
+      <HintPath>..\packages\LinqExpressionsMapper.2.0.0\lib\LinqExpressionsMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MoreLinq, Version=1.1.17511.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\morelinq.1.1.0\lib\net35\MoreLinq.dll</HintPath>
@@ -43,53 +47,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\DelegateEqualityComparer.cs" />
-    <Compile Include="Extensions\Linq\Expressions\AggregateExpressionExtensions.cs" />
-    <Compile Include="Extensions\Linq\Expressions\ContinuationsExpressionExtensions.cs" />
-    <Compile Include="Extensions\Linq\Expressions\EnumExpressionExtensions.cs" />
-    <Compile Include="Extensions\Linq\Expressions\ParameterReplacementExtensions.cs" />
-    <Compile Include="Extensions\Linq\Expressions\Visitors\ExpressionRebinder.cs" />
     <Compile Include="Model\AlertType.cs" />
-    <Compile Include="Cultures\Culture.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Culture.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Extensions\Linq\Expressions\Visitors\ParameterChangeTypeRebinder.cs" />
     <Compile Include="Model\CRUDOperation.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\EnumerableComparer.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
-    <Compile Include="Extensions\FilterExpressionExtensions.cs" />
-    <Compile Include="Extensions\Linq\Expressions\Rebinders\EnumerableMemberInitRebinder.cs" />
-    <Compile Include="Extensions\Linq\Expressions\ClassBehaviourExpressionExtensions.cs" />
-    <Compile Include="Extensions\Linq\Expressions\Rebinders\InitInheritanceRebinder.cs" />
-    <Compile Include="Extensions\Linq\Expressions\Rebinders\InitRebinder.cs" />
-    <Compile Include="Extensions\Linq\Expressions\Rebinders\InitFromMemberInheritanceRebinder.cs" />
-    <Compile Include="Extensions\Linq\Expressions\Rebinders\MemberInitRebinder.cs" />
-    <Compile Include="Extensions\Linq\Expressions\Visitors\MemberRebinder.cs" />
-    <Compile Include="Extensions\Linq\Expressions\Visitors\ParameterRebinder.cs" />
-    <Compile Include="Resolvers\MapperLinqExpressionsExtension.cs" />
-    <Compile Include="Resolvers\SelectsResolver\IParamSelectExpression.cs" />
-    <Compile Include="Resolvers\SelectsResolver\ISelectResolver.cs" />
-    <Compile Include="Resolvers\Mapper.cs" />
-    <Compile Include="Extensions\IFilterExpression.cs" />
-    <Compile Include="Resolvers\MapperResolver\IMappingResolver.cs" />
-    <Compile Include="Resolvers\SelectsResolver\ISelectExpressionNonCache.cs" />
     <Compile Include="Model\IdName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resolvers\MapperResolver\IPropertiesMapper.cs" />
-    <Compile Include="Resolvers\MapperResolver\MappingResolver.cs" />
-    <Compile Include="Model\PairId.cs" />
-    <Compile Include="Resolvers\SelectsResolver\ISelectExpression.cs" />
-    <Compile Include="Resolvers\MapperLinqSelectExtension.cs" />
-    <Compile Include="Resolvers\SelectsResolver\SelectResolver.cs" />
     <Compile Include="Model\TreeNode.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Cultures\Culture.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Culture.cs</LastGenOutput>
-    </None>
     <None Include="DteExtensions.ttinclude" />
     <None Include="packages.config" />
   </ItemGroup>
