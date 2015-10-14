@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LinqExpressionsMapper, Version=2.0.1.0, Culture=neutral, PublicKeyToken=321140b77c1b6047, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\LinqExpressionsMapper.2.0.1\lib\LinqExpressionsMapper.dll</HintPath>
+    </Reference>
     <Reference Include="MoreLinq, Version=1.1.17511.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\morelinq.1.1.0\lib\net35\MoreLinq.dll</HintPath>
